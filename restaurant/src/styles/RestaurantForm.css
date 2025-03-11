@@ -1,0 +1,68 @@
+/* 컨테이너 스타일 */
+.restaurant-form-container {
+  width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa; /* 부트스트랩의 bg-light 색상 */
+}
+
+/* 제목 스타일 */
+.restaurant-form-container h2 {
+  text-align: center;
+  color: #13c260;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* 버튼 스타일 */
+.restaurant-form-container .btn-primary {
+  background-color: #13c260;
+  border: none;
+  transition: background 0.3s ease-in-out;
+}
+
+.restaurant-form-container .btn-primary:hover {
+  background-color: #13a660;
+}
+
+/* 입력 필드 포커스 시 스타일 */
+.restaurant-form-container .form-control:focus {
+  border-color: #13a660;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.rating-container {
+  margin: 10px 0;
+  text-align: center; /* 라벨(텍스트)도 가운데 정렬 */
+}
+
+.stars {
+  display: flex;
+  justify-content: center; /* ⭐ 별을 가운데 정렬 */
+  font-size: 24px;
+  cursor: pointer;
+  gap: 5px; /* 별 사이 간격 추가 */
+}
+
+.star {
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.star.selected {
+  color: gold;
+}
+
+.star:hover {
+  color: gold;
+}
+
+.form-group {
+  margin-bottom: 20px; /* 모든 입력 필드 사이 간격 조정 */
+}
+
+.search-bar-container {
+  margin-top: 10px; /* 검색바 위쪽에 간격 추가 */
+}

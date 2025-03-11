@@ -1,0 +1,32 @@
+/* 🗺 카카오 지도 스타일 */
+.map-container {
+  width: 100%;
+  height: 350px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 📌 마커 클릭 시 나오는 정보창 스타일 */
+.marker-info {
+  color: #000;
+  padding: 3px;
+  background: #fff;
+  border-radius: 0px;
+}
+
+/* 🏠 지도 감싸는 카드 스타일 */
+.map-card {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.map-title {
+  color: #13a660; /* 원하는 색상 코드 */
+  font-weight: bold;
+  text-align: center;
+}

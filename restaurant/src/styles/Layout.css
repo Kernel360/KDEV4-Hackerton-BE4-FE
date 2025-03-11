@@ -1,0 +1,49 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header nav a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.main-container {
+  display: flex;
+  flex: 1;
+  padding: 15px;
+}
+
+.content {
+  flex: 3; /* 🔹 메인 콘텐츠 영역 */
+  padding-right: 20px;
+}
+
+.chatbox {
+  flex: 1; /* 🔹 오른쪽 채팅 영역 */
+  background: #f8f9fa;
+  padding: 15px;
+  border-left: 2px solid #dee2e6;
+  min-width: 350px;
+}
+
+.footer {
+  background: #343a40;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
