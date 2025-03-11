@@ -8,20 +8,29 @@ const Layout: React.FC = () => {
     <div className="layout">
       {/* 🔹 공통 헤더 */}
       <header className="header">
-        <h1>🍽 맛집 추천</h1>
-        <nav>
-          <Link to="/">🏠 홈</Link>
-          <Link to="/add">➕ 추천 등록</Link>
+        <h1>BE4 </h1>
+        <nav className="nav">
+          <Link to="/" className="nav-link">
+            🏠 홈
+          </Link>
+          <Link to="/add" className="nav-link">
+            ➕ 추천 등록
+          </Link>
+          <Link to="/rooms" className="nav-link">
+            📅 회의실 예약
+          </Link>{" "}
+          {/* ✅ 추가된 네비게이션 */}
         </nav>
       </header>
 
+      {/* 🔹 메인 컨테이너 */}
       <div className="main-container">
-        {/* 🔹 메인 콘텐츠 영역 */}
+        {/* 🔹 메인 콘텐츠 영역 (라우트 출력) */}
         <main className="content">
-          <Outlet />
+          <Outlet /> {/* ✅ 라우트가 여기에 출력됨 */}
         </main>
 
-        {/* 🔹 오른쪽 채팅창 (WebSocket 채팅 컴포넌트) */}
+        {/* 🔹 오른쪽 채팅창 */}
         <aside className="chatbox">
           <WebSocketChat />
         </aside>

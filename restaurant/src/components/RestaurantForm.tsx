@@ -1,32 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ navigate 추가
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./../styles/RestaurantForm.css"; // 스타일 파일
+import "./../styles/RestaurantForm.css";
 import SearchBar from "./SearchBar";
 import InputField from "./InputField";
 import SearchKakaoMap from "./SearchKakaoMap";
 
-interface RestaurantFormProps {
-  isEditMode?: boolean;
-  initialData?: {
-    id: number;
-    title?: string;
-    name: string;
-    location: string;
-    reason: string;
-    lat: number;
-    lng: number;
-    password?: string;
-    speedRating?: number;
-    priceRating?: number;
-    tasteRating?: number;
-    createdAt?: string;
-  };
-}
-
-const RestaurantForm: React.FC<RestaurantFormProps> = ({
+const RestaurantForm: React.FC<{ isEditMode?: boolean; initialData?: any }> = ({
   isEditMode = false,
   initialData,
 }) => {
+  const navigate = useNavigate(); // ✅ 페이지 이동을 위한 네비게이션 훅
   const [title, setTitle] = useState(initialData?.title || "");
   const [name, setName] = useState(initialData?.name || "");
   const [location, setLocation] = useState(initialData?.location || "");
@@ -35,7 +19,6 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
   const [speedRating, setSpeedRating] = useState(initialData?.speedRating || 3);
   const [priceRating, setPriceRating] = useState(initialData?.priceRating || 3);
   const [tasteRating, setTasteRating] = useState(initialData?.tasteRating || 3);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlace, setSelectedPlace] = useState<{
     name: string;
@@ -44,7 +27,6 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
   } | null>(null);
   const [showMap, setShowMap] = useState(false);
 
-  // 🔹 지도에서 선택된 장소의 정보를 업데이트
   useEffect(() => {
     if (selectedPlace) {
       setName(selectedPlace.name || "");
@@ -60,43 +42,41 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedPlace) {
+    if (!selectedPlace && !isEditMode) {
       alert("❌ 식당을 지도에서 선택해야 합니다!");
       return;
     }
 
-    // ✅ 현재 시간을 ISO 8601 형식으로 변환
     const createdAt = new Date().toISOString();
 
-    // ✅ 서버로 보낼 데이터 객체
     const restaurantData = {
       title,
+      content: reason,
       name,
-      location,
-      comment: reason, // 🆕 추천 이유 필드명을 `comment`로 변경
-      password,
-      tasteRating,
-      priceRating,
-      speedRating,
-      lat: selectedPlace?.position.lat ?? initialData?.lat, // 🔹 값이 없으면 기존 데이터 유지
+      address: location,
+      lat: selectedPlace?.position.lat ?? initialData?.lat,
       lng: selectedPlace?.position.lng ?? initialData?.lng,
-      createdAt, // ✅ 현재 시간 추가
+      createdAt,
+      password,
+      category: null,
+      tasteRating,
+      speedRating,
+      priceRating,
     };
 
     try {
-      const response = await fetch(
-        isEditMode
-          ? `http://localhost:8080/restaurants/${initialData?.id}`
-          : "http://localhost:8080/restaurants",
-        {
-          method: isEditMode ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(restaurantData),
-        }
-      );
+      const response = await fetch("http://localhost:8080/restaurant", {
+        method: isEditMode ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(restaurantData),
+      });
 
       if (response.ok) {
+        const responseData = await response.json(); // ✅ 응답 데이터 받기
         alert(`✅ 식당 추천이 ${isEditMode ? "수정" : "등록"}되었습니다!`);
+        navigate(`/restaurant/${responseData.id}`, {
+          state: { post: responseData },
+        }); // ✅ 데이터와 함께 이동
       } else {
         alert(`❌ ${isEditMode ? "수정" : "등록"}에 실패했습니다.`);
       }
@@ -111,29 +91,22 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
       <h2>{isEditMode ? "🍽 식당 정보 수정" : "🍽 식당 추천하기"}</h2>
 
       <form onSubmit={handleSubmit}>
-        {/* 🆕 게시글 제목 입력 */}
-        <div className="form-group">
-          <InputField
-            label="게시글 제목"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-
-        {/* 🔹 검색 바 위쪽에 간격 추가 */}
+        <InputField
+          label="게시글 제목"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
         <div className="search-bar-container">
           <SearchBar onSearch={handleSearch} />
         </div>
 
-        {showMap && (
+        {showMap && !isEditMode && (
           <SearchKakaoMap
             searchQuery={searchQuery}
             onSelectPlace={setSelectedPlace}
           />
         )}
-
-        {/* 🔒 이름 & 위치는 항상 비활성화 상태 */}
         <InputField
           label="식당 이름"
           value={name}
@@ -146,8 +119,6 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
           onChange={() => {}}
           disabled
         />
-
-        {/* 📝 추천 이유 */}
         <InputField
           label="추천 이유"
           type="textarea"
@@ -155,19 +126,14 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
           onChange={(e) => setReason(e.target.value)}
           required
         />
-
-        {/* 비밀번호 입력 */}
         <InputField
           label="게시글 비밀번호"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          minLength={4}
-          maxLength={6}
           required
         />
 
-        {/* ⭐ 별점 선택 UI */}
         <RatingInput
           label="🍽 음식 나오는 속도"
           rating={speedRating}
@@ -184,11 +150,10 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
           setRating={setTasteRating}
         />
 
-        {/* 🔒 지도에서 선택하지 않으면 제출 불가 */}
         <button
           type="submit"
           className="btn btn-primary w-100"
-          disabled={!selectedPlace}
+          disabled={!selectedPlace && !isEditMode}
         >
           {isEditMode ? "수정 완료" : "게시글 올리기"}
         </button>

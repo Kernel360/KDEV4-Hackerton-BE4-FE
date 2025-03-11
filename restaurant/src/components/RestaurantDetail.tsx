@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Map, MapMarker } from "react-kakao-maps-sdk"; // 🆕 카카오 지도 추가
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./../styles/RestaurantDetail.css"; // 스타일 파일
+import "./../styles/RestaurantDetail.css";
 
 interface RestaurantPost {
   id: number;
@@ -20,54 +20,89 @@ interface RestaurantPost {
 }
 
 /* ⭐ 별점 표시 함수 */
-const renderStars = (rating: number) => {
-  const fullStars = "⭐".repeat(rating);
-  const emptyStars = "☆".repeat(5 - rating);
-  return (
-    <span className="star-rating">
-      {fullStars}
-      {emptyStars} ({rating}/5)
-    </span>
-  );
-};
+const renderStars = (rating: number) => (
+  <span className="star-rating">
+    {"⭐".repeat(rating)}
+    {"☆".repeat(5 - rating)} ({rating}/5)
+  </span>
+);
 
 const RestaurantDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // URL에서 ID 가져오기
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [post, setPost] = useState<RestaurantPost | null>(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  // ✅ 초기 데이터: state에 있으면 사용, 없으면 null
+  const [post, setPost] = useState<RestaurantPost | null>(
+    location.state?.post || null
+  );
+  const [loading, setLoading] = useState(!post);
+  const [password, setPassword] = useState("");
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+  // ✅ 게시글 데이터 가져오기 (수정 후에도 최신 데이터 반영)
+  const fetchPostData = () => {
+    setLoading(true);
+    fetch(`http://localhost:8080/restaurant/${id}`)
+      .then((res) => res.json())
+      .then((data) => setPost(data))
+      .catch((error) => console.error("게시글 불러오기 실패:", error))
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    fetch(`http://localhost:8080/restaurants/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setPost(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("게시글 불러오기 실패:", error);
-        setLoading(false);
-      });
+    if (!post) {
+      fetchPostData(); // ✅ 페이지 처음 로딩 시 데이터 가져오기
+    }
   }, [id]);
 
-  // 🔹 게시글 삭제 함수
-  const handleDelete = async () => {
-    if (!window.confirm("정말로 이 게시글을 삭제하시겠습니까?")) return;
+  // ✅ 수정 버튼 클릭 → 수정 후 이 화면으로 다시 돌아오면 최신 데이터 반영
+  const handleEditClick = () => {
+    if (post) {
+      navigate(`/edit/${post.id}`, {
+        state: { post },
+      });
+    }
+  };
+
+  // ✅ 수정 완료 후 최신 데이터 불러오기
+  useEffect(() => {
+    const handlePopState = () => fetchPostData();
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  // ✅ 삭제 버튼 클릭 → 비밀번호 입력 요청
+  const handleDeleteClick = () => {
+    setShowPasswordModal(true);
+  };
+
+  // ✅ 비밀번호 입력 후 삭제 요청
+  const handleDeleteConfirm = async () => {
+    if (!password.trim()) {
+      alert("❌ 비밀번호를 입력해주세요.");
+      return;
+    }
 
     try {
-      const response = await fetch(`http://localhost:8080/restaurants/${id}`, {
+      const response = await fetch(`http://localhost:8080/restaurant/${id}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
       });
 
       if (response.ok) {
         alert("✅ 게시글이 삭제되었습니다.");
         navigate("/"); // 삭제 후 목록으로 이동
       } else {
-        alert("❌ 삭제 실패!");
+        alert("❌ 삭제 실패! 비밀번호를 확인해주세요.");
       }
     } catch (error) {
       console.error("삭제 실패:", error);
       alert("❌ 서버 오류 발생.");
+    } finally {
+      setShowPasswordModal(false);
+      setPassword("");
     }
   };
 
@@ -101,18 +136,17 @@ const RestaurantDetail: React.FC = () => {
         </p>
         <p>
           <strong>📝 수정일:</strong>{" "}
-          {post.updatedAt ? new Date(post.updatedAt).toLocaleString() : ""}
+          {post.updatedAt ? new Date(post.updatedAt).toLocaleString() : "없음"}
         </p>
       </div>
 
-      {/* 🗺 카카오 지도 추가 (크기 및 마커 확인) */}
+      {/* 🗺 카카오 지도 추가 */}
       <div className="map-container">
-        <h4>📍 식당 위치</h4>
         {post.lat && post.lng ? (
           <Map
             center={{ lat: post.lat, lng: post.lng }}
             className="map"
-            level={3} // 🔹 지도 확대 수준 조정
+            level={3}
           >
             <MapMarker position={{ lat: post.lat, lng: post.lng }}>
               <div style={{ padding: "5px", color: "#000" }}>
@@ -136,16 +170,40 @@ const RestaurantDetail: React.FC = () => {
 
       {/* 버튼 컨테이너 */}
       <div className="button-container">
-        <button
-          className="btn btn-warning"
-          onClick={() => navigate(`/edit/${post.id}`)}
-        >
+        <button className="btn btn-warning" onClick={handleEditClick}>
           ✏️ 수정
         </button>
-        <button className="btn btn-danger" onClick={handleDelete}>
+        <button className="btn btn-danger" onClick={handleDeleteClick}>
           🗑 삭제
         </button>
       </div>
+
+      {/* 🆕 비밀번호 입력 모달 */}
+      {showPasswordModal && (
+        <div className="password-modal">
+          <div className="password-modal-content">
+            <h4>🔒 비밀번호 입력</h4>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호 입력"
+              className="form-control"
+            />
+            <div className="password-modal-buttons">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowPasswordModal(false)}
+              >
+                취소
+              </button>
+              <button className="btn btn-danger" onClick={handleDeleteConfirm}>
+                삭제 확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -73,7 +73,7 @@ const WebSocketChat: React.FC = () => {
 
   // Enter 키로 메시지 전송
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && e.nativeEvent.isComposing === false) {
       sendMessage();
     }
   };
@@ -101,7 +101,7 @@ const WebSocketChat: React.FC = () => {
     <div className="container my-4" style={{ maxWidth: "400px" }}>
       <div className="card">
         <div className="card-header">
-          <h4>WebSocket 채팅</h4>
+          <h4>BE4 채팅</h4>
         </div>
         <div
           className="card-body"
