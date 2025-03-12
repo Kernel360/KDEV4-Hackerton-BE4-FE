@@ -248,6 +248,7 @@ const RoomList: React.FC = () => {
     e.preventDefault();
     if (!selectedRoom) return;
 
+    console.log(roomId);
     // 시간 유효성 검사
     if (
       !(await validateTimes(
