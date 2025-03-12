@@ -11,26 +11,26 @@
 /* 제목 스타일 */
 .restaurant-form-container h2 {
   text-align: center;
-  color: #13c260;
+  color: #000000;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
 /* 버튼 스타일 */
 .restaurant-form-container .btn-primary {
-  background-color: #13c260;
+  background-color: #3098fa;
   border: none;
   transition: background 0.3s ease-in-out;
 }
 
 .restaurant-form-container .btn-primary:hover {
-  background-color: #13a660;
+  background-color: #006fd7;
 }
 
 /* 입력 필드 포커스 시 스타일 */
 .restaurant-form-container .form-control:focus {
-  border-color: #13a660;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  border-color: #006fd7;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.973);
 }
 
 .rating-container {
