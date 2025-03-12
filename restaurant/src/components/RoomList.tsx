@@ -4,10 +4,12 @@ import "bootstrap/dist/css/bootstrap.min.css"; // ✅ CSS만 사용 시
 import "bootstrap/dist/js/bootstrap.bundle.min"; // ✅ JS 기능도 필요할 경우 추가
 import Modal from "react-bootstrap/Modal";
 import { Tab, Tabs } from "react-bootstrap";
+import "../styles/RoomList.css"; // CSS 파일 import 확인
 
 interface Room {
   id: number;
   name: string;
+  roomName: string;
 }
 
 interface Team {
@@ -229,9 +231,7 @@ const RoomList: React.FC = () => {
         );
       }
 
-      const checkResponse = await api.get(
-        `/room/${roomId}/check?${params.toString()}`
-      );
+
       return true;
     } catch (error) {
       console.error("예약 가능 여부 확인 오류:", error);
@@ -381,7 +381,7 @@ const RoomList: React.FC = () => {
 
   return (
     <div className="container">
-      <Tabs defaultActiveKey="rooms" className="mb-3" unmountOnExit={false}>
+      <Tabs defaultActiveKey="rooms" className="mb-3">
         <Tab eventKey="rooms" title="회의실">
           <div className="room-grid">
             {rooms.map((room) => {
