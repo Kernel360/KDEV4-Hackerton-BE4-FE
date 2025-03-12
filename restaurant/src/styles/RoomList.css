@@ -5,8 +5,8 @@
 
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr); /* 2개의 열로 설정 */
+  gap: 20px; /* 아이템 간의 간격 */
 }
 
 .room-box {
@@ -15,16 +15,18 @@
   text-align: center;
   font-weight: bold;
   transition: 0.3s;
+  min-height: 150px; /* 최소 높이 설정 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
 }
 
 .room-box.available {
-  background: #dff0d8;
+  background-color: #d4edda; /* 연한 초록색 배경 */
   border: 1px solid #4caf50;
   color: #2e7d32;
 }
 
 .room-box.reserved {
-  background: #f8d7da;
+  background-color: #f8d7da; /* 연한 빨간색 배경 */
   border: 1px solid #d32f2f;
   color: #d32f2f;
 }
@@ -36,7 +38,7 @@
 .status {
   margin-top: 10px;
   font-size: 14px;
-  font-weight: normal;
+  color: #6c757d; /* 회색 텍스트 */
 }
 
 .btn-primary {
