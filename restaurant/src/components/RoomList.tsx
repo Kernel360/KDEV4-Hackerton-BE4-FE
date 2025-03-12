@@ -192,7 +192,7 @@ const RoomList: React.FC = () => {
     const [endHour, endMinute] = endTime.split(":").map(Number);
     const start = startHour * 60 + startMinute;
     const end = endHour * 60 + endMinute;
-
+    console.log(roomId);
     // 운영 시간 검사 (09:00 ~ 20:00)
     const operatingStart = 9 * 60; // 09:00
     const operatingEnd = 20 * 60; // 20:00
@@ -231,7 +231,6 @@ const RoomList: React.FC = () => {
         );
       }
 
-
       return true;
     } catch (error) {
       console.error("예약 가능 여부 확인 오류:", error);
@@ -247,8 +246,6 @@ const RoomList: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRoom) return;
-
-    console.log(roomId);
     // 시간 유효성 검사
     if (
       !(await validateTimes(
