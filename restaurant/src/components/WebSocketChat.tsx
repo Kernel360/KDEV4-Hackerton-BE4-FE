@@ -101,36 +101,35 @@ const WebSocketChat: React.FC = () => {
     <div className="container my-4" style={{ maxWidth: "400px" }}>
       <div className="card">
         <div className="card-header">
-          <h4>BE4 채팅</h4>
+          <h4>익명 채팅</h4>
         </div>
         <div
           className="card-body"
           style={{
-            maxHeight: "300px", // 고정된 높이
-            overflowY: "auto", // 스크롤 가능
-            paddingRight: "15px", // 스크롤바 여백
-            height: "300px", // 고정된 높이
+            maxHeight: "300px",
+            overflowY: "auto",
+            paddingRight: "15px",
+            height: "300px",
           }}
         >
           {/* 메시지 리스트 */}
-          {messages.map(formatMessage)} {/* 메시지 배열을 화면에 출력 */}
+          {messages.map(formatMessage)}
           <div ref={messagesEndRef} />
         </div>
-        <div className="card-footer">
-          <div className="input-group">
-            {/* 메시지 입력 */}
-            <input
-              type="text"
-              value={inputMessage}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyPress}
-              className="form-control"
-              placeholder="메시지를 입력하세요"
-            />
-            <button onClick={sendMessage} className="btn btn-primary ms-2">
-              보내기
-            </button>
-          </div>
+
+        {/* ✅ 입력창과 버튼을 세로로 배치 */}
+        <div className="card-footer d-flex flex-column gap-2">
+          <input
+            type="text"
+            value={inputMessage}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyPress}
+            className="form-control"
+            placeholder="메시지를 입력하세요"
+          />
+          <button onClick={sendMessage} className="btn btn-primary w-100">
+            보내기
+          </button>
         </div>
       </div>
     </div>
