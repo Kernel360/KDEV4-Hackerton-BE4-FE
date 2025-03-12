@@ -8,7 +8,13 @@ const Layout: React.FC = () => {
     <div className="layout">
       {/* 🔹 공통 헤더 */}
       <header className="header">
-        <h1>BE Commu</h1>
+        {/* ✅ FAST KERNEL을 클릭하면 홈("/")으로 이동 */}
+        <h1>
+          <Link to="/" className="logo-link">
+            💻 FAST KERNEL
+          </Link>
+        </h1>
+
         <nav className="nav">
           <Link to="/" className="nav-link">
             🏠 홈
@@ -18,8 +24,7 @@ const Layout: React.FC = () => {
           </Link>
           <Link to="/rooms" className="nav-link">
             📅 회의실 예약
-          </Link>{" "}
-          {/* ✅ 추가된 네비게이션 */}
+          </Link>
         </nav>
       </header>
 
@@ -38,7 +43,7 @@ const Layout: React.FC = () => {
 
       {/* 🔹 공통 푸터 */}
       <footer className="footer">
-        <p>© 2025 맛집 추천 서비스 | All Rights Reserved</p>
+        <p>© Be4 FAST KERNEL </p>
       </footer>
     </div>
   );
