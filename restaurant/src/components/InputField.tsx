@@ -2,11 +2,11 @@ interface InputFieldProps {
   label: string;
   type?: string;
   value: string;
-  onChange: (
+  onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
+  ) => void; // ✅ 선택적 속성으로 변경
   required?: boolean;
-  disabled?: boolean; // 🔥 추가
+  disabled?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -15,7 +15,7 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   required = false,
-  disabled = false, // 🔥 추가
+  disabled = false,
 }) => {
   return (
     <div className="form-group">
@@ -24,18 +24,18 @@ const InputField: React.FC<InputFieldProps> = ({
         <textarea
           className="form-control"
           value={value}
-          onChange={onChange}
+          onChange={onChange} // ✅ 선택적 속성이므로, 존재할 때만 실행됨
           required={required}
-          disabled={disabled} // 🔥 적용
+          disabled={disabled}
         />
       ) : (
         <input
           type={type}
           className="form-control"
           value={value}
-          onChange={onChange}
+          onChange={onChange} // ✅ 선택적 속성이므로, 존재할 때만 실행됨
           required={required}
-          disabled={disabled} // 🔥 적용
+          disabled={disabled}
         />
       )}
     </div>
