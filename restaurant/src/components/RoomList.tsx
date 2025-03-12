@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
+import "bootstrap/dist/css/bootstrap.min.css"; // ✅ CSS만 사용 시
+import "bootstrap/dist/js/bootstrap.bundle.min"; // ✅ JS 기능도 필요할 경우 추가
 import Modal from "react-bootstrap/Modal";
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
+import { Tab, Tabs } from "react-bootstrap";
 
 interface Room {
   id: number;
@@ -27,6 +28,8 @@ interface RoomStatus {
   roomId: number;
   status: string;
   isAvailable: boolean;
+  teamName?: string;
+  roomName: string;
 }
 
 const RoomList: React.FC = () => {
@@ -151,7 +154,7 @@ const RoomList: React.FC = () => {
         let isAvailable = true;
 
         if (currentReservation) {
-          statusText = `사용 중 (${
+          statusText = `사용 중 (예약팀: ${
             currentReservation.team.teamName
           }, ~${formatTime(currentReservation.endTime)})`;
           isAvailable = false;
@@ -165,6 +168,7 @@ const RoomList: React.FC = () => {
           roomId: room.id,
           status: statusText,
           isAvailable: isAvailable,
+          roomName: room.roomName,
         });
       }
 
@@ -377,7 +381,7 @@ const RoomList: React.FC = () => {
 
   return (
     <div className="container">
-      <Tabs defaultActiveKey="rooms" className="mb-3">
+      <Tabs defaultActiveKey="rooms" className="mb-3" unmountOnExit={false}>
         <Tab eventKey="rooms" title="회의실">
           <div className="room-grid">
             {rooms.map((room) => {
@@ -390,6 +394,7 @@ const RoomList: React.FC = () => {
                   }`}
                 >
                   <h3>{room.name}</h3>
+                  <p>{status?.roomName || "회의실 이름 없음"}</p>
                   <div className="status">
                     {status?.status || "상태 확인 중..."}
                   </div>
@@ -480,7 +485,7 @@ const RoomList: React.FC = () => {
                           : ""
                       }
                     >
-                      <td>{reservation.room.name}</td>
+                      <td>{reservation.room.roomName}</td>
                       <td>{reservation.team.teamName}</td>
                       <td>{formatDate(reservation.reservationDate)}</td>
                       <td>{formatTime(reservation.startTime)}</td>
