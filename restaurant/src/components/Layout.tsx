@@ -13,7 +13,7 @@ const Layout: React.FC = () => {
           <Link to="/" className="nav-link">
             🏠 홈
           </Link>
-          <Link to="/add" className="nav-link">
+          <Link to="/restaurant/list" className="nav-link">
             🍽 식당 게시판
           </Link>
           <Link to="/rooms" className="nav-link">
