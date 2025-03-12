@@ -13,21 +13,20 @@ const WebSocketChat: React.FC = () => {
   const [inputMessage, setInputMessage] = useState<string>(""); // 사용자 입력 메시지 상태
   const socketRef = useRef<WebSocket | null>(null); // WebSocket 객체를 참조
   const messagesEndRef = useRef<HTMLDivElement | null>(null); // 메시지 끝을 가리킬 ref
-  const timeoutRef = useRef<NodeJS.Timeout|number | null>(null);
+  const chatBodyRef = useRef<HTMLDivElement | null>(null); // 채팅 메시지 컨테이너 ref
+  const timeoutRef = useRef<NodeJS.Timeout | number | null>(null);
+  const [isAutoScroll, setIsAutoScroll] = useState(true); // 자동 스크롤 여부 상태
 
   // WebSocket 연결 설정
   const connectWebSocket = () => {
     console.log("connectWebSocket");
-    // WebSocket 객체 생성 및 연결
     socketRef.current = new WebSocket("ws://211.188.56.146:8080/connect"); // 서버 URL에 맞게 수정 필요
 
-    // 메시지를 받았을 때 처리
     socketRef.current.onmessage = (event: MessageEvent) => {
-      const receivedMessage: Message = JSON.parse(event.data); // 받은 메시지 JSON 파싱
-      setMessages((prevMessages) => [...prevMessages, receivedMessage]); // 메시지를 배열에 추가
+      const receivedMessage: Message = JSON.parse(event.data);
+      setMessages((prevMessages) => [...prevMessages, receivedMessage]);
     };
 
-    // WebSocket 연결이 열렸을 때 처리
     socketRef.current.onopen = () => {
       console.log("WebSocket 연결 성공");
       if (timeoutRef.current != null) {
@@ -36,11 +35,10 @@ const WebSocketChat: React.FC = () => {
       }
     };
 
-    // WebSocket 연결이 종료됐을 때 처리
     socketRef.current.onclose = () => {
       console.log("WebSocket 연결 종료. 3초 뒤 재연결 시도...");
       timeoutRef.current = setTimeout(() => {
-        connectWebSocket(); // 연결 끊기면 3초 뒤 재연결
+        connectWebSocket();
       }, 3000);
     };
   };
@@ -48,9 +46,8 @@ const WebSocketChat: React.FC = () => {
   // 처음 컴포넌트가 마운트될 때 WebSocket 연결
   useEffect(() => {
     console.log("init");
-    connectWebSocket(); // WebSocket 연결 시도
+    connectWebSocket();
 
-    // 컴포넌트가 언마운트될 때 WebSocket 종료
     return () => {
       console.log("destroy");
       socketRef.current?.close();
@@ -60,8 +57,8 @@ const WebSocketChat: React.FC = () => {
   // 메시지 전송 함수
   const sendMessage = () => {
     if (inputMessage.trim() !== "") {
-      socketRef.current?.send(inputMessage); // 서버로 메시지 전송
-      setInputMessage(""); // 입력란 초기화
+      socketRef.current?.send(inputMessage);
+      setInputMessage("");
     }
   };
 
@@ -72,29 +69,42 @@ const WebSocketChat: React.FC = () => {
 
   // Enter 키로 메시지 전송
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.nativeEvent.isComposing === false) {
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       sendMessage();
     }
   };
 
   // 서버로부터 받은 메시지 출력 형식
   const formatMessage = (message: Message) => {
-    const formattedTime = `${message.timestamp[3]}:${message.timestamp[4]}:${message.timestamp[5]}`; // 시간을 HH:MM:SS 형식으로 변환
+    const formattedTime = `${message.timestamp[3]}:${message.timestamp[4]}:${message.timestamp[5]}`;
     const uniqueKey = `${message.id}`;
     return (
       <div key={uniqueKey} className="mb-2">
         <strong>유저{message.senderId.substring(0, 5)}</strong>{" "}
-        <span>({formattedTime})</span>: {message.payload}
+        <span style={{ fontSize: "12px", color: "#6c757d" }}>
+          ({formattedTime})
+        </span>
+        : {message.payload}
       </div>
     );
   };
 
-  // 메시지 리스트가 변경될 때마다 자동으로 스크롤을 가장 아래로 내리기
+  // ✅ 유저가 스크롤을 위로 올렸는지 감지하는 함수
+  const handleScroll = () => {
+    if (!chatBodyRef.current) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = chatBodyRef.current;
+    const isUserAtBottom = scrollHeight - scrollTop <= clientHeight + 10; // 오차 허용
+
+    setIsAutoScroll(isUserAtBottom);
+  };
+
+  // ✅ 메시지 리스트가 변경될 때 자동으로 스크롤 (단, 유저가 위로 스크롤한 경우 제외)
   useEffect(() => {
-    if (messagesEndRef.current) {
+    if (isAutoScroll && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, isAutoScroll]);
 
   return (
     <div className="container my-4" style={{ maxWidth: "400px" }}>
@@ -103,6 +113,7 @@ const WebSocketChat: React.FC = () => {
           <h4>익명 채팅</h4>
         </div>
         <div
+          ref={chatBodyRef}
           className="card-body"
           style={{
             maxHeight: "300px",
@@ -110,8 +121,8 @@ const WebSocketChat: React.FC = () => {
             paddingRight: "15px",
             height: "300px",
           }}
+          onScroll={handleScroll} // ✅ 스크롤 이벤트 추가
         >
-          {/* 메시지 리스트 */}
           {messages.map(formatMessage)}
           <div ref={messagesEndRef} />
         </div>

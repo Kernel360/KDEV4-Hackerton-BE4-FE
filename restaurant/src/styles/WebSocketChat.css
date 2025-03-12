@@ -1,8 +1,6 @@
 .websocket-chat-container {
   width: 100%;
-  width: 550px;
   background: white;
-  border-radius: 10px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -10,10 +8,11 @@
 }
 
 .websocket-chat-body {
-  height: 500px;
-  overflow-y: auto;
+  flex: 1; /* 자동 크기 조정 */
+  overflow-y: auto; /* 스크롤 가능 */
   padding: 10px;
   background: #f8f9fa;
+  scroll-behavior: smooth; /* 스크롤 애니메이션 적용 */
 }
 
 .websocket-chat-message {
@@ -46,24 +45,10 @@
   border-radius: 5px;
 }
 
-/* .websocket-chat-footer button {
-  width: 100%;
-  padding: 8px 12px;
-  background-color: #99ceff !important;
-  border: none !important;
-  color: white !important;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.websocket-chat-footer button:hover {
-  background-color: #0056b3 !important;
-} */
-
 .custom-chat-button {
   width: 100%;
   padding: 8px 12px;
-  background-color: #99ceff !important;
+  background-color: #0056b3 !important;
   color: white;
   border: none;
   border-radius: 5px;
