@@ -14,7 +14,7 @@ const WebSocketChat: React.FC = () => {
   const [inputMessage, setInputMessage] = useState<string>(""); // 사용자 입력 메시지 상태
   const socketRef = useRef<WebSocket | null>(null); // WebSocket 객체를 참조
   const messagesEndRef = useRef<HTMLDivElement | null>(null); // 메시지 끝을 가리킬 ref
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout|number | null>(null);
 
   // WebSocket 연결 설정
   const connectWebSocket = () => {
