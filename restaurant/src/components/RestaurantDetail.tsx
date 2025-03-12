@@ -96,7 +96,7 @@ const RestaurantDetail: React.FC = () => {
 
       if (response.ok) {
         alert("✅ 게시글이 삭제되었습니다.");
-        navigate("/"); // 삭제 후 목록으로 이동
+        navigate("/restaurant/list"); // 삭제 후 목록으로 이동
       } else {
         alert("❌ 삭제 실패! 비밀번호를 확인해주세요.");
       }
