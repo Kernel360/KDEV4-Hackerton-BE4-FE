@@ -19,7 +19,7 @@ const SearchKakaoMap: React.FC<Props> = ({ searchQuery, onSelectPlace }) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
   // ✅ 초기 지도 중심 좌표 (서울 강남구 역삼동 826-21)
-  const [center, setCenter] = useState<{ lat: number; lng: number }>({
+  const [center] = useState<{ lat: number; lng: number }>({
     lat: 37.499590490909185,
     lng: 127.02924733504722,
   });
