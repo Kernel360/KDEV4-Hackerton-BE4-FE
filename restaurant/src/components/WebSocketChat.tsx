@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 // 메시지 타입 정의
 interface Message {
@@ -127,7 +126,7 @@ const WebSocketChat: React.FC = () => {
             className="form-control"
             placeholder="메시지를 입력하세요"
           />
-          <button onClick={sendMessage} className="btn btn-primary w-100">
+          <button onClick={sendMessage} className="custom-chat-button">
             보내기
           </button>
         </div>

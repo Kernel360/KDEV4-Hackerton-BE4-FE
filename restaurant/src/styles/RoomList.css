@@ -1,32 +1,43 @@
 .container {
   max-width: 1200px;
   margin: auto;
+  padding: 20px;
 }
 
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2개의 열로 설정 */
-  gap: 20px; /* 아이템 간의 간격 */
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
+  justify-items: stretch;
+  align-items: center;
+  aspect-ratio: 1; /* 비율을 1:1로 설정 */
 }
 
 .room-box {
-  padding: 20px;
+  width: 90%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
   border-radius: 10px;
   text-align: center;
   font-weight: bold;
   transition: 0.3s;
-  min-height: 150px; /* 최소 높이 설정 */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .room-box.available {
-  background-color: #d4edda; /* 연한 초록색 배경 */
+  background-color: #d4edda;
   border: 1px solid #4caf50;
   color: #2e7d32;
 }
 
 .room-box.reserved {
-  background-color: #f8d7da; /* 연한 빨간색 배경 */
+  background-color: #f8d7da;
   border: 1px solid #d32f2f;
   color: #d32f2f;
 }
@@ -35,12 +46,29 @@
   transform: scale(1.05);
 }
 
-.status {
-  margin-top: 10px;
+.room-box .status {
+  margin-top: 5px;
   font-size: 14px;
-  color: #6c757d; /* 회색 텍스트 */
+  color: #6c757d;
 }
 
-.btn-primary {
-  width: 100%;
+.room-box .btn-primary {
+  width: 80%;
+  margin-top: 5px;
+  padding: 6px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.room-box .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.room-box .btn-primary:active {
+  background-color: #004085;
 }

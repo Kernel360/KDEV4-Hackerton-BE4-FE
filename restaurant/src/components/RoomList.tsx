@@ -9,7 +9,6 @@ import "../styles/RoomList.css"; // CSS 파일 import 확인
 interface Room {
   id: number;
   name: string;
-  roomName: string;
 }
 
 interface Team {
@@ -51,7 +50,7 @@ const RoomList: React.FC = () => {
     password: "",
   });
   const [selectedReservation, setSelectedReservation] =
-    useState<Reservation | null>(null);
+      useState<Reservation | null>(null);
 
   // 날짜 포맷팅 함수
   const formatDate = (date: string) => {
@@ -94,7 +93,7 @@ const RoomList: React.FC = () => {
       const allReservations: Reservation[] = [];
       for (const room of rooms) {
         const response = await api.get<Reservation[]>(
-          `/room/${room.id}/reservations`
+            `/room/${room.id}/reservations`
         );
         allReservations.push(...response.data);
       }
@@ -116,20 +115,20 @@ const RoomList: React.FC = () => {
 
       for (const room of rooms) {
         const response = await api.get<Reservation[]>(
-          `/room/${room.id}/reservations`
+            `/room/${room.id}/reservations`
         );
         const reservations = response.data;
 
         const todayReservations = reservations.filter(
-          (res) => res.reservationDate === today
+            (res) => res.reservationDate === today
         );
 
         const currentReservation = todayReservations.find((res) => {
           const [startHour, startMinute] = res.startTime.split(":").map(Number);
           const [endHour, endMinute] = res.endTime.split(":").map(Number);
           const [currentHour, currentMinute] = currentTime
-            .split(":")
-            .map(Number);
+              .split(":")
+              .map(Number);
 
           const start = startHour * 60 + startMinute;
           const end = endHour * 60 + endMinute;
@@ -139,30 +138,30 @@ const RoomList: React.FC = () => {
         });
 
         const nextReservation = todayReservations
-          .filter((res) => {
-            const [startHour, startMinute] = res.startTime
-              .split(":")
-              .map(Number);
-            const [currentHour, currentMinute] = currentTime
-              .split(":")
-              .map(Number);
-            return (
-              startHour * 60 + startMinute > currentHour * 60 + currentMinute
-            );
-          })
-          .sort((a, b) => a.startTime.localeCompare(b.startTime))[0];
+            .filter((res) => {
+              const [startHour, startMinute] = res.startTime
+                  .split(":")
+                  .map(Number);
+              const [currentHour, currentMinute] = currentTime
+                  .split(":")
+                  .map(Number);
+              return (
+                  startHour * 60 + startMinute > currentHour * 60 + currentMinute
+              );
+            })
+            .sort((a, b) => a.startTime.localeCompare(b.startTime))[0];
 
         let statusText = "사용 가능";
         let isAvailable = true;
 
         if (currentReservation) {
           statusText = `사용 중 (예약팀: ${
-            currentReservation.team.teamName
+              currentReservation.team.teamName
           }, ~${formatTime(currentReservation.endTime)})`;
           isAvailable = false;
         } else if (nextReservation) {
           statusText = `사용 가능 (다음 예약: ${formatTime(
-            nextReservation.startTime
+              nextReservation.startTime
           )})`;
         }
 
@@ -182,17 +181,17 @@ const RoomList: React.FC = () => {
 
   // 시간 유효성 검사 함수
   const validateTimes = async (
-    startTime: string,
-    endTime: string,
-    roomId: number,
-    reservationDate: string
+      startTime: string,
+      endTime: string,
+      roomId: number,
+      reservationDate: string
   ) => {
     // 시간을 분으로 변환하여 비교
     const [startHour, startMinute] = startTime.split(":").map(Number);
     const [endHour, endMinute] = endTime.split(":").map(Number);
     const start = startHour * 60 + startMinute;
     const end = endHour * 60 + endMinute;
-    console.log(roomId);
+
     // 운영 시간 검사 (09:00 ~ 20:00)
     const operatingStart = 9 * 60; // 09:00
     const operatingEnd = 20 * 60; // 20:00
@@ -226,16 +225,19 @@ const RoomList: React.FC = () => {
       // 수정 시에는 기존 예약 ID를 파라미터로 추가
       if (selectedReservation) {
         params.append(
-          "excludeReservationId",
-          selectedReservation.id.toString()
+            "excludeReservationId",
+            selectedReservation.id.toString()
         );
       }
 
+      const checkResponse = await api.get(
+          `/room/${roomId}/check?${params.toString()}`
+      );
       return true;
     } catch (error) {
       console.error("예약 가능 여부 확인 오류:", error);
       alert(
-        "에러: " + (error as any).response?.data ||
+          "에러: " + (error as any).response?.data ||
           "예약 가능 여부 확인 중 오류가 발생했습니다."
       );
       return false;
@@ -246,14 +248,15 @@ const RoomList: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRoom) return;
+
     // 시간 유효성 검사
     if (
-      !(await validateTimes(
-        formData.startTime,
-        formData.endTime,
-        selectedRoom.id,
-        formData.reservationDate
-      ))
+        !(await validateTimes(
+            formData.startTime,
+            formData.endTime,
+            selectedRoom.id,
+            formData.reservationDate
+        ))
     ) {
       return;
     }
@@ -263,8 +266,8 @@ const RoomList: React.FC = () => {
       if (selectedReservation) {
         // 예약 수정
         response = await api.put(
-          `/room/${selectedRoom.id}/reservation/${selectedReservation.id}`,
-          formData
+            `/room/${selectedRoom.id}/reservation/${selectedReservation.id}`,
+            formData
         );
       } else {
         // 새로운 예약
@@ -273,9 +276,9 @@ const RoomList: React.FC = () => {
 
       if (response.status === 200) {
         alert(
-          selectedReservation
-            ? "예약이 수정되었습니다."
-            : "예약이 완료되었습니다."
+            selectedReservation
+                ? "예약이 수정되었습니다."
+                : "예약이 완료되었습니다."
         );
         setShowModal(false);
         setSelectedReservation(null);
@@ -291,13 +294,13 @@ const RoomList: React.FC = () => {
       }
     } catch (err) {
       console.error(
-        selectedReservation ? "예약 수정 실패:" : "예약 실패:",
-        err
+          selectedReservation ? "예약 수정 실패:" : "예약 실패:",
+          err
       );
       alert(
-        selectedReservation
-          ? "예약 수정에 실패했습니다."
-          : "예약에 실패했습니다."
+          selectedReservation
+              ? "예약 수정에 실패했습니다."
+              : "예약에 실패했습니다."
       );
     }
   };
@@ -310,32 +313,32 @@ const RoomList: React.FC = () => {
 
     // 종료 시간을 선택할 때만 유효성 검사 실행
     if (
-      name === "endTime" &&
-      value &&
-      newFormData.startTime &&
-      selectedRoom &&
-      newFormData.reservationDate
+        name === "endTime" &&
+        value &&
+        newFormData.startTime &&
+        selectedRoom &&
+        newFormData.reservationDate
     ) {
       await validateTimes(
-        newFormData.startTime,
-        value,
-        selectedRoom.id,
-        newFormData.reservationDate
+          newFormData.startTime,
+          value,
+          selectedRoom.id,
+          newFormData.reservationDate
       );
     }
   };
 
   // 예약 취소
   const handleCancelReservation = async (
-    roomId: number,
-    reservationId: number
+      roomId: number,
+      reservationId: number
   ) => {
     const password = prompt("예약 취소를 위한 비밀번호를 입력하세요:");
     if (!password) return;
 
     try {
       await api.delete(
-        `/room/${roomId}/reservation/${reservationId}?password=${password}`
+          `/room/${roomId}/reservation/${reservationId}?password=${password}`
       );
       alert("예약이 취소되었습니다.");
       loadReservations();
@@ -378,69 +381,69 @@ const RoomList: React.FC = () => {
   if (loading) return <div>로딩 중...</div>;
 
   return (
-    <div className="container">
-      <Tabs defaultActiveKey="rooms" className="mb-3">
-        <Tab eventKey="rooms" title="회의실">
-          <div className="room-grid">
-            {rooms.map((room) => {
-              const status = roomStatuses.find((s) => s.roomId === room.id);
-              return (
-                <div
-                  key={room.id}
-                  className={`room-box ${
-                    status?.isAvailable ? "available" : "reserved"
-                  }`}
-                >
-                  <h3>{room.name}</h3>
-                  <p>{status?.roomName || "회의실 이름 없음"}</p>
-                  <div className="status">
-                    {status?.status || "상태 확인 중..."}
-                  </div>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      setSelectedRoom(room);
-                      setShowModal(true);
-                    }}
-                  >
-                    예약하기
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </Tab>
-
-        <Tab
-          eventKey="reservations"
-          title="예약 현황"
-          onEnter={loadReservations}
-        >
-          <div className="mb-4 p-3 border rounded bg-light">
-            <div className="d-flex align-items-center gap-3">
-              <label htmlFor="filterDate" className="form-label mb-0 fw-bold">
-                날짜별 조회:
-              </label>
-              <input
-                type="date"
-                id="filterDate"
-                className="form-control"
-                style={{ width: "auto", fontSize: "16px" }}
-                value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value)}
-              />
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() => setFilterDate("")}
-              >
-                전체 보기
-              </button>
+      <div className="container">
+        <Tabs defaultActiveKey="rooms" className="mb-3" unmountOnExit={false}>
+          <Tab eventKey="rooms" title="회의실">
+            <div className="room-grid">
+              {rooms.map((room) => {
+                const status = roomStatuses.find((s) => s.roomId === room.id);
+                return (
+                    <div
+                        key={room.id}
+                        className={`room-box ${
+                            status?.isAvailable ? "available" : "reserved"
+                        }`}
+                    >
+                      <h3>{room.name}</h3>
+                      <p>{status?.roomName || "회의실 이름 없음"}</p>
+                      <div className="status">
+                        {status?.status || "상태 확인 중..."}
+                      </div>
+                      <button
+                          className="btn btn-primary"
+                          onClick={() => {
+                            setSelectedRoom(room);
+                            setShowModal(true);
+                          }}
+                      >
+                        예약하기
+                      </button>
+                    </div>
+                );
+              })}
             </div>
-          </div>
+          </Tab>
 
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead className="table-dark">
+          <Tab
+              eventKey="reservations"
+              title="예약 현황"
+              onEnter={loadReservations}
+          >
+            <div className="mb-4 p-3 border rounded bg-light">
+              <div className="d-flex align-items-center gap-3">
+                <label htmlFor="filterDate" className="form-label mb-0 fw-bold">
+                  날짜별 조회:
+                </label>
+                <input
+                    type="date"
+                    id="filterDate"
+                    className="form-control"
+                    style={{ width: "auto", fontSize: "16px" }}
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                />
+                <button
+                    className="btn btn-outline-secondary"
+                    onClick={() => setFilterDate("")}
+                >
+                  전체 보기
+                </button>
+              </div>
+            </div>
+
+            <div className="table-responsive">
+              <table className="table table-hover">
+                <thead className="table-dark">
                 <tr>
                   <th style={{ width: "15%" }}>회의실</th>
                   <th style={{ width: "20%" }}>팀</th>
@@ -449,17 +452,17 @@ const RoomList: React.FC = () => {
                   <th style={{ width: "15%" }}>종료 시간</th>
                   <th style={{ width: "15%" }}>작업</th>
                 </tr>
-              </thead>
-              <tbody>
+                </thead>
+                <tbody>
                 {(filterDate
-                  ? reservations.filter((r) => r.reservationDate === filterDate)
-                  : reservations
+                        ? reservations.filter((r) => r.reservationDate === filterDate)
+                        : reservations
                 ).map((reservation) => {
                   const now = new Date();
                   const reservationDate = new Date(reservation.reservationDate);
                   const startTime = reservation.startTime
-                    .split(":")
-                    .map(Number);
+                      .split(":")
+                      .map(Number);
                   const endTime = reservation.endTime.split(":").map(Number);
 
                   const reservationStart = new Date(reservationDate);
@@ -469,215 +472,215 @@ const RoomList: React.FC = () => {
                   reservationEnd.setHours(endTime[0], endTime[1]);
 
                   const isActive =
-                    now >= reservationStart && now < reservationEnd;
+                      now >= reservationStart && now < reservationEnd;
                   const isPast = now > reservationEnd;
 
                   return (
-                    <tr
-                      key={reservation.id}
-                      className={
-                        isActive
-                          ? "table-primary"
-                          : isPast
-                          ? "table-secondary"
-                          : ""
-                      }
-                    >
-                      <td>{reservation.room.roomName}</td>
-                      <td>{reservation.team.teamName}</td>
-                      <td>{formatDate(reservation.reservationDate)}</td>
-                      <td>{formatTime(reservation.startTime)}</td>
-                      <td>{formatTime(reservation.endTime)}</td>
-                      <td>
-                        {!isPast && (
-                          <>
-                            <button
-                              className="btn btn-sm btn-danger me-1"
-                              onClick={() =>
-                                handleCancelReservation(
-                                  reservation.room.id,
-                                  reservation.id
-                                )
-                              }
-                            >
-                              취소
-                            </button>
-                            <button
-                              className="btn btn-sm btn-primary"
-                              onClick={() => {
-                                setSelectedRoom(reservation.room);
-                                setSelectedReservation(reservation);
-                                setFormData({
-                                  ...formData,
-                                  teamId: reservation.team.id.toString(),
-                                  reservationDate: reservation.reservationDate,
-                                  startTime: reservation.startTime,
-                                  endTime: reservation.endTime,
-                                });
-                                setShowModal(true);
-                              }}
-                            >
-                              수정
-                            </button>
-                          </>
-                        )}
-                        {isPast && "종료됨"}
-                      </td>
-                    </tr>
+                      <tr
+                          key={reservation.id}
+                          className={
+                            isActive
+                                ? "table-primary"
+                                : isPast
+                                    ? "table-secondary"
+                                    : ""
+                          }
+                      >
+                        <td>{reservation.room.roomName}</td>
+                        <td>{reservation.team.teamName}</td>
+                        <td>{formatDate(reservation.reservationDate)}</td>
+                        <td>{formatTime(reservation.startTime)}</td>
+                        <td>{formatTime(reservation.endTime)}</td>
+                        <td>
+                          {!isPast && (
+                              <>
+                                <button
+                                    className="btn btn-sm btn-danger me-1"
+                                    onClick={() =>
+                                        handleCancelReservation(
+                                            reservation.room.id,
+                                            reservation.id
+                                        )
+                                    }
+                                >
+                                  취소
+                                </button>
+                                <button
+                                    className="btn btn-sm btn-primary"
+                                    onClick={() => {
+                                      setSelectedRoom(reservation.room);
+                                      setSelectedReservation(reservation);
+                                      setFormData({
+                                        ...formData,
+                                        teamId: reservation.team.id.toString(),
+                                        reservationDate: reservation.reservationDate,
+                                        startTime: reservation.startTime,
+                                        endTime: reservation.endTime,
+                                      });
+                                      setShowModal(true);
+                                    }}
+                                >
+                                  수정
+                                </button>
+                              </>
+                          )}
+                          {isPast && "종료됨"}
+                        </td>
+                      </tr>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
-        </Tab>
-      </Tabs>
-
-      <Modal
-        show={showModal}
-        onHide={() => {
-          setShowModal(false);
-          setSelectedReservation(null);
-          setFormData({
-            teamId: "",
-            reservationDate: "",
-            startTime: "",
-            endTime: "",
-            password: "",
-          });
-        }}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            회의실 {selectedRoom?.name}{" "}
-            {selectedReservation ? "예약 수정" : "예약"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group mb-3">
-              <label>팀 선택</label>
-              <select
-                className="form-control"
-                value={formData.teamId}
-                onChange={(e) =>
-                  setFormData({ ...formData, teamId: e.target.value })
-                }
-                required
-              >
-                <option value="">팀을 선택하세요</option>
-                {teams.map((team) => (
-                  <option key={team.id} value={team.id}>
-                    {team.teamName}
-                  </option>
-                ))}
-              </select>
+                </tbody>
+              </table>
             </div>
+          </Tab>
+        </Tabs>
 
-            <div className="form-group mb-3">
-              <label>예약 날짜</label>
-              <input
-                type="date"
-                className="form-control"
-                value={formData.reservationDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, reservationDate: e.target.value })
-                }
-                min={(() => {
-                  const now = new Date();
-                  const hour = now.getHours();
+        <Modal
+            show={showModal}
+            onHide={() => {
+              setShowModal(false);
+              setSelectedReservation(null);
+              setFormData({
+                teamId: "",
+                reservationDate: "",
+                startTime: "",
+                endTime: "",
+                password: "",
+              });
+            }}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              회의실 {selectedRoom?.name}{" "}
+              {selectedReservation ? "예약 수정" : "예약"}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group mb-3">
+                <label>팀 선택</label>
+                <select
+                    className="form-control"
+                    value={formData.teamId}
+                    onChange={(e) =>
+                        setFormData({ ...formData, teamId: e.target.value })
+                    }
+                    required
+                >
+                  <option value="">팀을 선택하세요</option>
+                  {teams.map((team) => (
+                      <option key={team.id} value={team.id}>
+                        {team.teamName}
+                      </option>
+                  ))}
+                </select>
+              </div>
 
-                  // 오전 9시 이전이면 전날부터 예약 가능
-                  if (hour < 9) {
-                    const yesterday = new Date(now);
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    return yesterday.toISOString().split("T")[0];
-                  }
-                  // 오전 9시 이후면 당일부터 예약 가능
-                  return now.toISOString().split("T")[0];
-                })()}
-                max={(() => {
-                  const now = new Date();
-                  const hour = now.getHours();
+              <div className="form-group mb-3">
+                <label>예약 날짜</label>
+                <input
+                    type="date"
+                    className="form-control"
+                    value={formData.reservationDate}
+                    onChange={(e) =>
+                        setFormData({ ...formData, reservationDate: e.target.value })
+                    }
+                    min={(() => {
+                      const now = new Date();
+                      const hour = now.getHours();
 
-                  // 오전 9시 이전이면 당일까지 예약 가능
-                  if (hour < 9) {
-                    return now.toISOString().split("T")[0];
-                  }
-                  // 오전 9시 이후면 다음날까지 예약 가능
-                  const tomorrow = new Date(now);
-                  tomorrow.setDate(tomorrow.getDate() + 1);
-                  return tomorrow.toISOString().split("T")[0];
-                })()}
-                required
-              />
-            </div>
+                      // 오전 9시 이전이면 전날부터 예약 가능
+                      if (hour < 9) {
+                        const yesterday = new Date(now);
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        return yesterday.toISOString().split("T")[0];
+                      }
+                      // 오전 9시 이후면 당일부터 예약 가능
+                      return now.toISOString().split("T")[0];
+                    })()}
+                    max={(() => {
+                      const now = new Date();
+                      const hour = now.getHours();
 
-            <div className="form-group mb-3">
-              <label>시작 시간</label>
-              <select
-                className="form-control"
-                name="startTime"
-                value={formData.startTime}
-                onChange={handleTimeChange}
-                required
-              >
-                <option value="">시작 시간 선택</option>
-                {Array.from({ length: 12 }, (_, i) => i + 9).map((hour) => (
-                  <option key={hour} value={`${hour}:00`}>
-                    {hour}:00
-                  </option>
-                ))}
-              </select>
-            </div>
+                      // 오전 9시 이전이면 당일까지 예약 가능
+                      if (hour < 9) {
+                        return now.toISOString().split("T")[0];
+                      }
+                      // 오전 9시 이후면 다음날까지 예약 가능
+                      const tomorrow = new Date(now);
+                      tomorrow.setDate(tomorrow.getDate() + 1);
+                      return tomorrow.toISOString().split("T")[0];
+                    })()}
+                    required
+                />
+              </div>
 
-            <div className="form-group mb-3">
-              <label>종료 시간</label>
-              <select
-                className="form-control"
-                name="endTime"
-                value={formData.endTime}
-                onChange={handleTimeChange}
-                required
-              >
-                <option value="">종료 시간 선택</option>
-                {Array.from({ length: 12 }, (_, i) => i + 10).map((hour) => (
-                  <option key={hour} value={`${hour}:00`}>
-                    {hour}:00
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div className="form-group mb-3">
+                <label>시작 시간</label>
+                <select
+                    className="form-control"
+                    name="startTime"
+                    value={formData.startTime}
+                    onChange={handleTimeChange}
+                    required
+                >
+                  <option value="">시작 시간 선택</option>
+                  {Array.from({ length: 12 }, (_, i) => i + 9).map((hour) => (
+                      <option key={hour} value={`${hour}:00`}>
+                        {hour}:00
+                      </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="form-group mb-3">
-              <label>비밀번호</label>
-              <input
-                type="password"
-                className="form-control"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                required
-                minLength={4}
-              />
-            </div>
+              <div className="form-group mb-3">
+                <label>종료 시간</label>
+                <select
+                    className="form-control"
+                    name="endTime"
+                    value={formData.endTime}
+                    onChange={handleTimeChange}
+                    required
+                >
+                  <option value="">종료 시간 선택</option>
+                  {Array.from({ length: 12 }, (_, i) => i + 10).map((hour) => (
+                      <option key={hour} value={`${hour}:00`}>
+                        {hour}:00
+                      </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="d-flex justify-content-end gap-2">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => setShowModal(false)}
-              >
-                취소
-              </button>
-              <button type="submit" className="btn btn-primary">
-                예약
-              </button>
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
-    </div>
+              <div className="form-group mb-3">
+                <label>비밀번호</label>
+                <input
+                    type="password"
+                    className="form-control"
+                    value={formData.password}
+                    onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                    }
+                    required
+                    minLength={4}
+                />
+              </div>
+
+              <div className="d-flex justify-content-end gap-2">
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowModal(false)}
+                >
+                  취소
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  예약
+                </button>
+              </div>
+            </form>
+          </Modal.Body>
+        </Modal>
+      </div>
   );
 };
 

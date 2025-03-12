@@ -50,7 +50,6 @@
   margin-top: 20px; /* ✅ 추가적인 여백 */
   height: calc(100vh - 70px); /* ✅ 전체 높이 조정 (여백 고려) */
   overflow-y: auto; /* ✅ 내부 스크롤 활성화 */
-  /* border-radius: 10px; ✅ 모서리 둥글게 */
 }
 
 .footer {
