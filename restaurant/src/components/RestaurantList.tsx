@@ -8,6 +8,8 @@ interface RestaurantPost {
   id: number;
   title: string;
   name: string;
+  lat: number; // ✅ 추가
+  lng: number; // ✅ 추가
 }
 
 const RestaurantList: React.FC = () => {
@@ -19,11 +21,11 @@ const RestaurantList: React.FC = () => {
   useEffect(() => {
     fetch("http://211.188.56.146:8080/restaurant/posts")
       .then((res) => res.json())
-      .then((data) => {
-        const parsedData = data.map((restaurant) => ({
+      .then((data: RestaurantPost[]) => {
+        const parsedData = data.map((restaurant: RestaurantPost) => ({
           ...restaurant,
-          lat: parseFloat(restaurant.lat),
-          lng: parseFloat(restaurant.lng),
+          lat: parseFloat(String(restaurant.lat)), // ✅ 타입 안전하게 변환
+          lng: parseFloat(String(restaurant.lng)),
         }));
 
         console.log("📌 변환된 데이터:", parsedData);
@@ -40,7 +42,17 @@ const RestaurantList: React.FC = () => {
 
   return (
     <div className="restaurant-list-container">
-      <h2>🍽 식당 추천 목록</h2>
+      <div className="restaurant-header">
+        <h2>🍽 식당 추천 목록</h2>
+        {/* ✅ 게시글 추가 버튼 */}
+        <button
+          className="add-button"
+          onClick={() => navigate("/restaurant/add")}
+        >
+          ➕ 게시글 추가
+        </button>
+      </div>
+
       {/* ✅ 지도 추가 (식당 목록 데이터를 지도에 전달) */}
       <MarkersMap restaurants={restaurants} />
 

@@ -59,7 +59,7 @@ const RestaurantDetail: React.FC = () => {
   // ✅ 수정 버튼 클릭 → 수정 후 이 화면으로 다시 돌아오면 최신 데이터 반영
   const handleEditClick = () => {
     if (post) {
-      navigate(`/edit/${post.id}`, {
+      navigate(`/restaurant/edit/${post.id}`, {
         state: { post },
       });
     }

@@ -43,6 +43,7 @@
   background: #e9ecef;
   color: black;
 }
+
 .websocket-chat-footer {
   display: flex;
   flex-direction: column; /* 요소들을 세로 정렬 */
