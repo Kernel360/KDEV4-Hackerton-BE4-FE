@@ -25,12 +25,6 @@
   font-size: 14px;
 }
 
-.websocket-chat-message.user {
-  background: #007bff;
-  color: white;
-  align-self: flex-end;
-}
-
 .websocket-chat-message.server {
   background: #e9ecef;
   color: black;
@@ -52,16 +46,30 @@
   border-radius: 5px;
 }
 
-.websocket-chat-footer button {
+/* .websocket-chat-footer button {
   width: 100%;
   padding: 8px 12px;
-  background: #99ceff;
+  background-color: #99ceff !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.websocket-chat-footer button:hover {
+  background-color: #0056b3 !important;
+} */
+
+.custom-chat-button {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #99ceff !important;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.websocket-chat-footer button:hover {
-  background: #0056b3;
+.custom-chat-button:hover {
+  background-color: #0056b3;
 }
