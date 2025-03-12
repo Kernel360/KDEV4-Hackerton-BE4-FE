@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port your application runs on (e.g., 3000 for Next.js apps)
-EXPOSE 80
+EXPOSE 3000 
 
 # Set the command to run the application in development mode
 CMD ["npm", "run", "dev"]
