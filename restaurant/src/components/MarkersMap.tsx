@@ -36,10 +36,10 @@ const MarkersMap: React.FC<MarkersMapProps> = ({ restaurants }) => {
           <div
             style={{
               color: "#000",
-              background: "#fff",
               padding: "5px",
               borderRadius: "5px",
-              boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
+              fontSize: "15px", // ✅ 텍스트 크기 조절 (기본보다 작게)
+              fontWeight: "bold", // ✅ 가독성을 위해 굵게 설정
             }}
           >
             {content}
