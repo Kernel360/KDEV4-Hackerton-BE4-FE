@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
-import WebSocketChat from "./WebSocketChat"; // 🔹 WebSocket 채팅 컴포넌트 추가
+import WebSocketChat from "./WebSocketChat"; //WebSocket 채팅 컴포넌트 추가
 import "./../styles/Layout.css";
 
 const Layout: React.FC = () => {
@@ -8,13 +8,13 @@ const Layout: React.FC = () => {
     <div className="layout">
       {/* 🔹 공통 헤더 */}
       <header className="header">
-        <h1>BE4 </h1>
+        <h1>BE Commu</h1>
         <nav className="nav">
           <Link to="/" className="nav-link">
             🏠 홈
           </Link>
           <Link to="/add" className="nav-link">
-            ➕ 추천 등록
+            🍽 식당 게시판
           </Link>
           <Link to="/rooms" className="nav-link">
             📅 회의실 예약
@@ -24,17 +24,17 @@ const Layout: React.FC = () => {
       </header>
 
       {/* 🔹 메인 컨테이너 */}
-      <div className="main-container">
+      <main className="main-container">
         {/* 🔹 메인 콘텐츠 영역 (라우트 출력) */}
-        <main className="content">
+        <div className="content">
           <Outlet /> {/* ✅ 라우트가 여기에 출력됨 */}
-        </main>
+        </div>
 
         {/* 🔹 오른쪽 채팅창 */}
         <aside className="chatbox">
           <WebSocketChat />
         </aside>
-      </div>
+      </main>
 
       {/* 🔹 공통 푸터 */}
       <footer className="footer">

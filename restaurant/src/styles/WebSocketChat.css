@@ -43,23 +43,24 @@
   background: #e9ecef;
   color: black;
 }
-
 .websocket-chat-footer {
   display: flex;
+  flex-direction: column; /* 요소들을 세로 정렬 */
   padding: 10px;
   background: #f8f9fa;
   border-top: 1px solid #dee2e6;
+  gap: 8px; /* input과 button 사이의 간격 */
 }
 
 .websocket-chat-footer input {
-  flex: 1;
+  width: 100%;
   padding: 8px;
   border: 1px solid #ced4da;
   border-radius: 5px;
 }
 
 .websocket-chat-footer button {
-  margin-left: 8px;
+  width: 100%;
   padding: 8px 12px;
   background: #007bff;
   color: white;

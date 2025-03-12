@@ -3,6 +3,7 @@ import api from "../api/axios";
 import "bootstrap/dist/css/bootstrap.min.css"; // ✅ CSS만 사용 시
 import "bootstrap/dist/js/bootstrap.bundle.min"; // ✅ JS 기능도 필요할 경우 추가
 import Modal from "react-bootstrap/Modal";
+import { Tab, Tabs } from "react-bootstrap";
 
 interface Room {
   id: number;

@@ -1,0 +1,44 @@
+.container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.room-box {
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.room-box.available {
+  background: #dff0d8;
+  border: 1px solid #4caf50;
+  color: #2e7d32;
+}
+
+.room-box.reserved {
+  background: #f8d7da;
+  border: 1px solid #d32f2f;
+  color: #d32f2f;
+}
+
+.room-box:hover {
+  transform: scale(1.05);
+}
+
+.status {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.btn-primary {
+  width: 100%;
+}

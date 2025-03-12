@@ -40,7 +40,7 @@ const RestaurantEditForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/restaurant/${post.id}`,
+        `http://211.188.56.146:8080/restaurant/${post.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

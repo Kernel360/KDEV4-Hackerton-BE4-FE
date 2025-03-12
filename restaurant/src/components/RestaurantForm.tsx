@@ -65,7 +65,7 @@ const RestaurantForm: React.FC<{ isEditMode?: boolean; initialData?: any }> = ({
     };
 
     try {
-      const response = await fetch("http://localhost:8080/restaurant", {
+      const response = await fetch("http://211.188.56.146:8080/restaurant", {
         method: isEditMode ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(restaurantData),

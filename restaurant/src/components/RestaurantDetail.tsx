@@ -43,7 +43,7 @@ const RestaurantDetail: React.FC = () => {
   // ✅ 게시글 데이터 가져오기 (수정 후에도 최신 데이터 반영)
   const fetchPostData = () => {
     setLoading(true);
-    fetch(`http://localhost:8080/restaurant/${id}`)
+    fetch(`http://211.188.56.146:8080/restaurant/${id}`)
       .then((res) => res.json())
       .then((data) => setPost(data))
       .catch((error) => console.error("게시글 불러오기 실패:", error))
@@ -85,11 +85,14 @@ const RestaurantDetail: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/restaurant/${id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
+      const response = await fetch(
+        `http://211.188.56.146:8080/restaurant/${id}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password }),
+        }
+      );
 
       if (response.ok) {
         alert("✅ 게시글이 삭제되었습니다.");

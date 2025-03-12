@@ -16,7 +16,7 @@ const RestaurantList: React.FC = () => {
 
   // ✅ 게시글 목록 불러오기
   useEffect(() => {
-    fetch("http://localhost:8080/restaurant/posts")
+    fetch("http://211.188.56.146:8080/restaurant/posts")
       .then((res) => res.json())
       .then((data) => {
         setRestaurants(data);
